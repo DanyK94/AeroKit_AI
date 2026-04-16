@@ -6,47 +6,57 @@ from tables.flightTable import *
 
 def main():
     print("Welcome to AeroKit AI!")
-    fNum = input("Enter a flight number to get flight information: ")
+    print("Enter flights numbers separated by comma to get flights information: ")
+    fNums = input("Flight Numbers: ").split(",") # Get flight numbers input from the user and split by comma
 
-    if not checkInput(fNum):
-        return
+    for fnum in fNums:
+        fNum = fnum.strip() # Remove any leading/trailing whitespace from the flight number
+        if not checkInput(fNum): 
+            print(f"Skipping invalid flight number: {fNum}")
+            fNums.remove(fnum) # Remove the invalid flight number from the list
+            continue
 
-    print(f"Fetching information for flight: {fNum}...")   
+    if len(fNums) > 0:
+        flights = getFlightDataByFNumber(fNums) # Call the flight service to get the flight details
+    else:
+        print("No valid flight numbers entered. Exiting AeroKit AI.")
+        sys.exit(1)
 
-    flight_info = getFlightDataByFNumber(fNum)
-
-    if flight_info is None:
-        print("No flight information found for the given flight number.")
-        return
     
     try:
-        add_flight_info_to_table(flight_info)
-        display_table()
+        display_flight_info(flights)
     except Exception as e:
         print(f"An error occurred while displaying flight information: {e}")
         sys.exit(1)
     
+    # Ask the user if they want to get airline information
+    choice = input("Do you want to get Airline information? (y/n): ")
+    if choice.lower() == 'y':
+        numRow = input("Enter the row number of the flight to get airline information: ")
+        fNum = flights[int(numRow) - 1].get("flight_iata", "N/A")
+        iata_code = fNum[:2].upper() # Extract the airline IATA code from the flight number (first two characters)
+        if iata_code == "N/A":
+            print("No aircraft IATA code found in flight information.")
+            return
+        
+        airline_info = getAirlineByIcao(iata_code)
+        if airline_info:
+            print(f"Airline Name: {airline_info.get('name', 'N/A')}")
+            print(f"Airline IATA Code: {airline_info.get('iata_code', 'N/A')}")
+            print(f"Airline ICAO Code: {airline_info.get('icao_code', 'N/A')}")
+        else:
+            print("No airline information found for the given ICAO code.")
+    else:
+        print("Exiting AeroKit AI. Goodbye!")
 
 def checkInput(fNum):
     if not fNum:
         print("Flight number cannot be empty")
         return False
-    elif len(fNum) < 6:
-        print("Invalid flight number. Please enter a 6-character code.")
+    elif len(fNum) < 2:
+        print("Invalid Flight number. Must be at least 2 character code")
         return False
     return True
-
-
-def printAll(datas):
-    for key, value in datas.items():
-        print (f"{key.upper()}: {value}")
-
-
-
-
-
-
-
 
 if __name__ == "__main__":
     main()

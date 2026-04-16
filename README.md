@@ -9,8 +9,11 @@
 [ ] Airport Info API
 
 ## Quick Start
-\`\`\`bash
+```bash
 pip install -r requirements.txt
+cp .env.example .env  # Add your AIRLABS_API_KEY
+python main.py
+```
 
 ## Tech Stack
 - Python 3.11+
