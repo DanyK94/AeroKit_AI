@@ -1,8 +1,8 @@
 import os
 import sys
-from services.airline_service import *
-from services.flight_service import *
-from tables.flightTable import *
+from clients.airline_client import *
+from clients.flight_client import *
+from tables.flight_table import *
 from tables.functions_table import *
 from tables.metar_table import *
 from services.metar_service import *
