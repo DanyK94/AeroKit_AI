@@ -11,7 +11,7 @@
 ## Quick Start
 ```bash
 pip install -r requirements.txt
-cp .env.example .env  # Add your AIRLABS_API_KEY
+cp .env.example .env  # Add your AIRLABS_API_KEY & AVWX_API_KEY
 python main.py
 ```
 

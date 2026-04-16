@@ -3,9 +3,38 @@ import sys
 from services.airline_service import *
 from services.flight_service import *
 from tables.flightTable import *
+from tables.functions_table import *
+from tables.metar_table import *
+from services.metar_service import *
 
 def main():
     print("Welcome to AeroKit AI!")
+    chooseFunctionality()
+
+def chooseFunctionality():
+    functions = [
+        {"name": "Get Flight Information", "description": "Retrieves real-time flight information based on flight number or route"},
+        {"name": "Get Airline Information", "description": "Retrieves information about a specific airline based on its IATA or ICAO code"},
+        {"name": "Get METAR Weather Report", "description": "Retrieves the latest METAR weather report for a specific airport"},
+        {"name": "Exit", "description": "Exits the AeroKit AI application"}
+    ]
+    display_functions_table(functions)
+    choice = input("Enter the number of the function you want to use: ")
+    if choice == "1":
+        flightInformation()
+    elif choice == "2":
+        airlineInformation()
+    elif choice == "3":
+        metarInformation()
+    elif choice == "4":
+        print("Exiting AeroKit AI. Goodbye!")
+        sys.exit(0)
+    else:
+        print("Invalid choice. Please choose a function listed in the table.")
+        console.wait_for_input("Press Enter to continue...")
+        chooseFunctionality()
+
+def flightInformation():
     print("Enter flights numbers separated by comma to get flights information: ")
     fNums = input("Flight Numbers: ").split(",") # Get flight numbers input from the user and split by comma
 
@@ -15,13 +44,12 @@ def main():
             print(f"Skipping invalid flight number: {fNum}")
             fNums.remove(fnum) # Remove the invalid flight number from the list
             continue
-
+    
     if len(fNums) > 0:
         flights = getFlightDataByFNumber(fNums) # Call the flight service to get the flight details
     else:
         print("No valid flight numbers entered. Exiting AeroKit AI.")
         sys.exit(1)
-
     
     try:
         display_flight_info(flights)
@@ -29,25 +57,25 @@ def main():
         print(f"An error occurred while displaying flight information: {e}")
         sys.exit(1)
     
-    # Ask the user if they want to get airline information
-    choice = input("Do you want to get Airline information? (y/n): ")
-    if choice.lower() == 'y':
-        numRow = input("Enter the row number of the flight to get airline information: ")
-        fNum = flights[int(numRow) - 1].get("flight_iata", "N/A")
-        iata_code = fNum[:2].upper() # Extract the airline IATA code from the flight number (first two characters)
-        if iata_code == "N/A":
-            print("No aircraft IATA code found in flight information.")
-            return
-        
-        airline_info = getAirlineByIcao(iata_code)
-        if airline_info:
-            print(f"Airline Name: {airline_info.get('name', 'N/A')}")
-            print(f"Airline IATA Code: {airline_info.get('iata_code', 'N/A')}")
-            print(f"Airline ICAO Code: {airline_info.get('icao_code', 'N/A')}")
-        else:
-            print("No airline information found for the given ICAO code.")
+def airlineInformation():
+    iata_code = input("Enter the IATA code of the airline: ").strip().upper() # Get the IATA code input from the user and convert to uppercase
+    airline_info = getAirlineByIcao(iata_code) #To Improve: Validation Input
+    if airline_info:
+        print(f"Airline Name: {airline_info.get('name', 'N/A')}")
+        print(f"Airline IATA Code: {airline_info.get('iata_code', 'N/A')}")
+        print(f"Airline ICAO Code: {airline_info.get('icao_code', 'N/A')}")
     else:
-        print("Exiting AeroKit AI. Goodbye!")
+        print("No airline information found for the given ICAO code.")
+    return
+
+def metarInformation():
+    icao_code = input("Enter the ICAO code of the airport: ").strip().upper() # Get the ICAO code input from the user and convert to uppercase
+    metar_info = getMetarData(icao_code) # Call the METAR service to get the weather report for the specified airport
+    if metar_info:
+        display_metar_info(metar_info) # Display the METAR information in a table format
+    else:
+        print("No METAR information found for the given ICAO code.")
+    return
 
 def checkInput(fNum):
     if not fNum:
