@@ -90,15 +90,17 @@ def metarInformation():
     return
 
 def acronymExplanation():
-    acronym = input("Enter the aviation acronym you want to know about: ").strip().upper() # Get the aviation acronym input from the user and convert to uppercase
-    if not acronym:
+    acronyms = input("Enter the aviation acronym(s), comma-separated: ").split(',')
+    
+    if not acronyms:
         print("Acronym cannot be empty.")
         return
-    explanation = getAcronymExplanation(acronym) # Call the acronym service to get the explanation for the specified acronym
-    if explanation is not None:
-        display_acronym_info(explanation) # Display the acronym information in a panel format
-    else:
-        print("No explanation found for the given acronym.")
+    for acr in acronyms:
+        explanation = getAcronymExplanation(acr.strip().upper()) # Call the acronym service to get the explanation for the specified acronym
+        if explanation is not None:
+            display_acronym_info(explanation) # Display the acronym information in a panel format
+        else:
+            print("No explanation found for the given acronym.")
     return
 
 def checkInput(fNum):

@@ -12,14 +12,16 @@ client = OpenAI(
     api_key=OPENROUTER_API_KEY
 )
 
-def getResponseFromOpenAI(prompt):
+def getResponseFromAI(prompt):
     messages = [{"role": "user", "content": prompt}]
     try:
-        response = client.responses.create(
+        completion = client.chat.completions.create(
             model=DEFAULT_AI_MODEL,
-            input=messages
+            messages=messages
         )
-        return response
+        token_used = completion.usage.total_tokens
+        print(f"Token used: {token_used}")
+        return completion.choices[0].message.content
     except OpenAIError as e:
         print(f"An error occurred while communicating with the AI provider: {e}")
         return None
