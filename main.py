@@ -6,6 +6,8 @@ from tables.flight_table import *
 from tables.functions_table import *
 from tables.metar_table import *
 from services.metar_service import *
+from services.acronym_service import *
+from tables.acronym_table import *
 
 def main():
     print("Welcome to AeroKit AI!")
@@ -16,6 +18,7 @@ def chooseFunctionality():
         {"name": "Get Flight Information", "description": "Retrieves real-time flight information based on flight number or route"},
         {"name": "Get Airline Information", "description": "Retrieves information about a specific airline based on its IATA or ICAO code"},
         {"name": "Get METAR Weather Report", "description": "Retrieves the latest METAR weather report for a specific airport"},
+        {"name": "Get Aviation Acronym Explanation", "description": "Provides detailed explanations of aviation acronyms"},
         {"name": "Exit", "description": "Exits the AeroKit AI application"}
     ]
     while True:
@@ -28,6 +31,8 @@ def chooseFunctionality():
         elif choice == "3":
             metarInformation()
         elif choice == "4":
+            acronymExplanation()
+        elif choice == "5":
             print("Exiting AeroKit AI. Goodbye!")
             break
         else:
@@ -59,7 +64,10 @@ def flightInformation():
     
 def airlineInformation():
     iata_code = input("Enter the IATA code of the airline: ").strip().upper() # Get the IATA code input from the user and convert to uppercase
-    airline_info = getAirlineByIcao(iata_code) #To Improve: Validation Input
+    if len(iata_code) != 2 or not iata_code.isalpha():
+        print("Invalid IATA code. It must be a 2-letter code.")
+        return
+    airline_info = getAirlineByIata(iata_code)
     if airline_info:
         print(f"Airline Name: {airline_info.get('name', 'N/A')}")
         print(f"Airline IATA Code: {airline_info.get('iata_code', 'N/A')}")
@@ -70,12 +78,27 @@ def airlineInformation():
 
 def metarInformation():
     icao_code = input("Enter the ICAO code of the airport: ").strip().upper() # Get the ICAO code input from the user and convert to uppercase
+    if len(icao_code) != 4 or not icao_code.isalpha(): # Validate that the ICAO code is a 4-letter code consisting of only letters
+        print("Invalid ICAO code.")
+        return
     metar_info = getMetarData(icao_code) # Call the METAR service to get the weather report for the specified airport
     if metar_info:
         #display_metar_info(metar_info) # Display the METAR information in a table format [OLD]
         display_metar_panel(metar_info) # Display the METAR information in a panel format
     else:
         print("No METAR information found for the given ICAO code.")
+    return
+
+def acronymExplanation():
+    acronym = input("Enter the aviation acronym you want to know about: ").strip().upper() # Get the aviation acronym input from the user and convert to uppercase
+    if not acronym:
+        print("Acronym cannot be empty.")
+        return
+    explanation = getAcronymExplanation(acronym) # Call the acronym service to get the explanation for the specified acronym
+    if explanation is not None:
+        display_acronym_info(explanation) # Display the acronym information in a panel format
+    else:
+        print("No explanation found for the given acronym.")
     return
 
 def checkInput(fNum):
@@ -86,6 +109,8 @@ def checkInput(fNum):
         print("Invalid Flight number. Must be at least 2 character code")
         return False
     return True
+
+
 
 if __name__ == "__main__":
     main()

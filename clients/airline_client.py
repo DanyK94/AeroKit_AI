@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 load_dotenv()
 AIRLABS_API_KEY = os.getenv("AIRLABS_API_KEY")
 
-def getAirlineByIcao(iata_code):
+def getAirlineByIata(iata_code):
     url = f"https://airlabs.co/api/v9/airlines?iata_code={iata_code}&api_key={AIRLABS_API_KEY}"
     response = requests.get(url)
     data = response.json()
