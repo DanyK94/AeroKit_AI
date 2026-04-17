@@ -2,11 +2,11 @@
 16 Week Journey Buildin an AI-Powered Aviation Tools
 
 ## Week 1 - Mini Projects - 14/04 Started
-[x] ICAO Code Lookup CLI
-[X] Flight Status Check
-[X] METAR Parser
-[ ] Acronym Explainer
-[ ] Airport Info API
+- [x] ICAO Code Lookup CLI
+- [X] Flight Status Check
+- [X] METAR Parser
+- [ ] Acronym Explainer
+- [ ] Airport Info API
 
 ## Quick Start
 ```bash
