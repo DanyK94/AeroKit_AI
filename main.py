@@ -18,21 +18,21 @@ def chooseFunctionality():
         {"name": "Get METAR Weather Report", "description": "Retrieves the latest METAR weather report for a specific airport"},
         {"name": "Exit", "description": "Exits the AeroKit AI application"}
     ]
-    display_functions_table(functions)
-    choice = input("Enter the number of the function you want to use: ")
-    if choice == "1":
-        flightInformation()
-    elif choice == "2":
-        airlineInformation()
-    elif choice == "3":
-        metarInformation()
-    elif choice == "4":
-        print("Exiting AeroKit AI. Goodbye!")
-        sys.exit(0)
-    else:
-        print("Invalid choice. Please choose a function listed in the table.")
-        console.wait_for_input("Press Enter to continue...")
-        chooseFunctionality()
+    while True:
+        display_functions_table(functions)
+        choice = input("Enter the number of the function you want to use: ")
+        if choice == "1":
+            flightInformation()
+        elif choice == "2":
+            airlineInformation()
+        elif choice == "3":
+            metarInformation()
+        elif choice == "4":
+            print("Exiting AeroKit AI. Goodbye!")
+            break
+        else:
+            print("Invalid choice. Please choose a function listed in the table.")
+        input("\nPress Enter to continue...") # Wait for user input before showing the functions table again
 
 def flightInformation():
     print("Enter flights numbers separated by comma to get flights information: ")
@@ -72,7 +72,8 @@ def metarInformation():
     icao_code = input("Enter the ICAO code of the airport: ").strip().upper() # Get the ICAO code input from the user and convert to uppercase
     metar_info = getMetarData(icao_code) # Call the METAR service to get the weather report for the specified airport
     if metar_info:
-        display_metar_info(metar_info) # Display the METAR information in a table format
+        #display_metar_info(metar_info) # Display the METAR information in a table format [OLD]
+        display_metar_panel(metar_info) # Display the METAR information in a panel format
     else:
         print("No METAR information found for the given ICAO code.")
     return
