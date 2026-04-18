@@ -3,8 +3,8 @@ from models.weather_report import WeatherReport
 
 
 def getMetarData(icao_code):
-    rawMetar = airport_client.getMetarByIata(icao_code)
-    airportInfo = airport_client.getAirportInfoByIata(icao_code)
+    rawMetar = airport_client.getMetarByIcao(icao_code)
+    airportInfo = airport_client.getAirportInfoByIcao(icao_code)
 
     weatherReport = WeatherReport(
         airport=f"{icao_code} - {airportInfo.get('name', 'Unknown Name')}",

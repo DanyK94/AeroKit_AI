@@ -5,7 +5,7 @@ import os
 load_dotenv()
 AVWX_API_KEY = os.getenv("AVWX_API_KEY")
 
-def getAirportInfoByIata(icao_code):
+def getAirportInfoByIcao(icao_code):
     headers = {'Authorization': AVWX_API_KEY}
     url = f"https://avwx.rest/api/station/{icao_code}"
 
@@ -35,7 +35,7 @@ def getAirportInfoByIata(icao_code):
     return data
 
 
-def getMetarByIata(icao_code):
+def getMetarByIcao(icao_code):
     headers = {'Authorization': AVWX_API_KEY}
     url = f"https://avwx.rest/api/metar/{icao_code}?airport=true"
 

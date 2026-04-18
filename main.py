@@ -9,6 +9,11 @@ from services.metar_service import *
 from services.acronym_service import *
 from tables.acronym_table import *
 
+from fastapi import FastAPI
+from controller.airport_controller import router as airport_router
+app = FastAPI()
+app.include_router(airport_router)
+
 def main():
     print("Welcome to AeroKit AI!")
     chooseFunctionality()

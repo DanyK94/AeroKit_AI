@@ -1,3 +1,4 @@
+# AEROKIT AI
 ## Project:
 16 Week Journey Building an AI-Powered Aviation Tools
 
@@ -15,8 +16,18 @@ cp .env.example .env  # Add your AIRLABS_API_KEY & AVWX_API_KEY & OPENROUTER_API
 python main.py
 ```
 
+## API
+### Start serve
+```bash
+uvicorn main:app --reload 
+```
+### Call Examples
+- http://127.0.0.1:8000/airport/LIRF
+- http://127.0.0.1:8000/airport/LIRF/weather
+
 ## Tech Stack
 - Python 3.11+
 - requests
 - rich (CLI formatting)
 - OpenAI
+- FastAPI
