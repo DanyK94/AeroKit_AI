@@ -12,8 +12,10 @@ from tables.acronym_table import *
 
 from fastapi import FastAPI
 from controller.airport_controller import router as airport_router
+from controller.app_controller import router as app_router
+
 app = FastAPI()
-app.include_router(airport_router)
+app.include_router(airport_router, app_router)
 
 def main():
     print("Welcome to AeroKit AI!")

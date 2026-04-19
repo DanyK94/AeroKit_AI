@@ -17,7 +17,7 @@ python main.py
 ```
 
 ## API
-### Start serve
+### Start server
 ```bash
 uvicorn main:app --reload 
 ```
@@ -25,6 +25,7 @@ uvicorn main:app --reload
 - http://127.0.0.1:8000/airport/LIRF
 - http://127.0.0.1:8000/airport/LIRF/weather
 - http://127.0.0.1:8000/airports/search?query=Roma
+- 
 
 ## Tech Stack
 - Python 3.11+
