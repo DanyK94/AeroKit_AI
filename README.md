@@ -24,6 +24,7 @@ uvicorn main:app --reload
 ### Call Examples
 - http://127.0.0.1:8000/airport/LIRF
 - http://127.0.0.1:8000/airport/LIRF/weather
+- http://127.0.0.1:8000/airports/search?query=Roma
 
 ## Tech Stack
 - Python 3.11+

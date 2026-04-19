@@ -2,15 +2,39 @@ from clients.airport_client import *
 from models.airport_model import Airport
 from models.runway_model import Runway
 from models.weather_report import *
+from clients.openai_client import getResponseFromAI
+
 
 def getAirportInformation(icao_code):
     data = getAirportInfoByIcao(icao_code)
+    if data.get('error') is not None:
+        return None
     return parseAirportInfo(data)
 
 def getWeatherReport(icao_code):
     metar = getMetarByIcao(icao_code)
     weatherReport = parseMetarWeather(metar)
     return weatherReport
+
+def getListAirportByKeyword(keyword):
+    prompt = f"""Give me a list of 3 airport's icao code related to the keyword:{keyword} sorted by importance and relevance to the keyword:
+    Format the response EXACTLY as the example that follow:
+    LIRU, LIRF, LIRA
+    DON'T Write explanation neither the prompt. the output MUST BE only a list as FOLLOW: LIRU, LIRF, LIRA
+    """
+    airports : list[Airport] = []
+
+    response = getResponseFromAI(prompt)
+    if response:
+        icao_list = response.split(', ')
+    else:
+        return None
+    for port in icao_list:
+        airports.append(getAirportInformation(port))
+    return airports
+
+    
+
 
 def parseMetarWeather(data):
 
@@ -35,9 +59,6 @@ def parseMetarWeather(data):
          
     )
     return airportWeather
-
-
-
 
 def parseAirportInfo(data):
 

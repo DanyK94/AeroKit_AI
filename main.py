@@ -7,6 +7,7 @@ from tables.functions_table import *
 from tables.metar_table import *
 from services.metar_service import *
 from services.acronym_service import *
+from services.airport_service import getListAirportByKeyword
 from tables.acronym_table import *
 
 from fastapi import FastAPI
@@ -24,6 +25,7 @@ def chooseFunctionality():
         {"name": "Get Airline Information", "description": "Retrieves information about a specific airline based on its IATA or ICAO code"},
         {"name": "Get METAR Weather Report", "description": "Retrieves the latest METAR weather report for a specific airport"},
         {"name": "Get Aviation Acronym Explanation", "description": "Provides detailed explanations of aviation acronyms"},
+        {"name": "Search Airport by keyword", "description": "Provides a list of related airports"},
         {"name": "Exit", "description": "Exits the AeroKit AI application"}
     ]
     while True:
@@ -38,6 +40,8 @@ def chooseFunctionality():
         elif choice == "4":
             acronymExplanation()
         elif choice == "5":
+            searchAirport()
+        elif choice == "6":
             print("Exiting AeroKit AI. Goodbye!")
             break
         else:
@@ -107,6 +111,10 @@ def acronymExplanation():
         else:
             print("No explanation found for the given acronym.")
     return
+
+def searchAirport():
+    query = input("Enter search parameter:")
+    print (getListAirportByKeyword(query))
 
 def checkInput(fNum):
     if not fNum:

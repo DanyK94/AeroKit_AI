@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from services.airport_service import getAirportInformation, getWeatherReport
+from services.airport_service import getAirportInformation, getWeatherReport, getListAirportByKeyword
 from dataclasses import asdict
 
 router = APIRouter()
@@ -15,9 +15,9 @@ def getAiportWeather(icao_code : str):
     return getWeatherReport(icao_code)
 
 #GET /airports/search?query={term} - lista aeroporti che matchano il search term
-#@router.get("/airports/search?query={term}")
-#def getAirportsByKey(term : str):
-#    return None
+@router.get("/airports/search")
+def getAirportsByKey(query : str):
+    return getListAirportByKeyword(query)
 
 
 #GET /airport/{icao_code}/flights - voli in arrivo/partenza dall'aeroporto (se disponibile via API) [NON DISPONIBILE VIA API]

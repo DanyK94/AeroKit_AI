@@ -30,8 +30,8 @@ def getAirportInfoByIcao(icao_code):
         print(f"Network error while fetching airport information for {icao_code}: {e}")
         return None
     
-    if not data.get('iata'):
-        print(f"No airport information found for {icao_code}.")
+    if data.get('error') is not None:
+        print(data.get('error'))
     return data
 
 

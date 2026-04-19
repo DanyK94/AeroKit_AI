@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from models.runway_model import Runway
+from pydantic import BaseModel
 
 @dataclass
 class Airport:
@@ -10,4 +11,8 @@ class Airport:
     latitude: float
     longitude: float
     runways: list[Runway]
+
+class Airports(BaseModel):
+    airports: list[Airport]
+
 
