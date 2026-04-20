@@ -7,7 +7,10 @@
 - [X] Flight Status Check
 - [X] METAR Parser
 - [X] Acronym Explainer
-- [ ] Airport Info API
+- [X] Airport Info API
+
+## Week 2 - XX - 20/04 Started
+- [ ] RAG
 
 ## Quick Start
 ```bash
@@ -33,3 +36,5 @@ uvicorn main:app --reload
 - rich (CLI formatting)
 - OpenAI
 - FastAPI
+- Unstructured
+- Langchain
