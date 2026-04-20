@@ -53,9 +53,9 @@ def delete_document(id: str):
     file_path = os.path.join(UPLOAD_DIR, id)
     if os.path.exists(file_path):
         os.remove(file_path)
-        return Response.ok
+        return {"status": "success", "deleted": id}
     else:
-        return Response.error
+        raise HTTPException(status_code=404, detail="Document not found")
     
             
 

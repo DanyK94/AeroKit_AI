@@ -47,7 +47,7 @@ def chunk_sections(section, doc_id):
     )
 
     for sec in section:
-        chunks = text_splitter.split_text(sec["text"])
+        chunks = text_splitter.split_text(sec.text)
 
         for i, chunk in enumerate(chunks):
             all_chunks.append({
@@ -62,11 +62,11 @@ def chunk_sections(section, doc_id):
             )
 
         #### NOTE: SWITCH TO PyPDF?
-    return chunks
+    return all_chunks
 
 
 #Embeddings
-def create_embeddings(sources: list[Source]):
+def create_embeddings(sources: list[dict]):
 
     for chunk in sources:
         embedding = model.encode(chunk["text"])
@@ -87,9 +87,10 @@ def do_query(user_query):
     context_parts = []
     for doc, meta in zip(documents,metadatas):
         part = f"""
-        Title: {meta.get("title")}
-        Chunk Index: {meta.get("chunk_index")}
-        Content: {doc}
+            Type: {meta.get("type", "Unknown")}
+            Page: {meta.get("page", "N/A")}
+            Chunk Index: {meta.get("chunk_index")}
+            Content: {doc}
         """
         context_parts.append(part)
 

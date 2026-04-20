@@ -28,7 +28,7 @@ def getListAirportByKeyword(keyword):
     response = getResponseFromAI(prompt)
     if response:
         #icao_list = response.split(', ') OLD
-        icao_list = re.findall(r'\b[A-Z]{4}\b') #REGEX FIND 4-LETTER CODES
+        icao_list = re.findall(r'\b[A-Z]{4}\b', response) #REGEX FIND 4-LETTER CODES
     else:
         return None
     for port in icao_list:

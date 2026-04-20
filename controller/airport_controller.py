@@ -32,8 +32,8 @@ def getAiportWeather(icao_code : str):
 @router.get("/airports/search")
 def getAirportsByKey(query : str):
     logger.info(f"Fetching airports list for key {query}")
+    data = getListAirportByKeyword(query)
     if not data:
         logger.error(f"No Data for {query}")
         raise HTTPException(status_code=404, detail="Weather not found")
-    data = getListAirportByKeyword(query)
     return data
