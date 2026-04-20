@@ -2,6 +2,10 @@ from unstructured.partition.auto import partition
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from sentence_transformers import SentenceTransformer
 from dao.chromadb_dao import store_chunks, get_chunks
+from clients.openai_client import getResponseFromAI
+from models.rag_schemas import QueryResponse, Source, QueryRequest
+import hashlib
+
 
 
 
@@ -14,7 +18,7 @@ def process_document_mock():
 
 
 def process_document(file_path):
-    
+    doc_id = hashlib.md5(file_path.encode()).hexdigest()[:12]
     #Partioning as semantic parser, semantically splitting text for chunking 
     elements = partition(filename=file_path) 
     
@@ -26,7 +30,7 @@ def process_document(file_path):
 
         texts.append({"type": el.category , "text": el.text})
     
-    chunks = chunk_sections(elements)
+    chunks = chunk_sections(elements, doc_id)
     chunks = create_embeddings(chunks)
     store_chunks(chunks)
     return "ok" #TO REDEFINE
@@ -34,7 +38,7 @@ def process_document(file_path):
     
 
 #Chunking for LLM and retrieval
-def chunk_sections(section):
+def chunk_sections(section, doc_id):
     all_chunks = []
     text_splitter  = RecursiveCharacterTextSplitter(
         chunk_size=1000,
@@ -49,22 +53,26 @@ def chunk_sections(section):
             all_chunks.append({
                 "text": chunk,
                 "metadata": {
-                    "title": sec["title"],
-                    "chunk_index": i
+                    "type" : sec.category,
+                    "chunk_index": i,
+                    "page" : getattr(sec, 'page_number',0),
+                    "document_id": doc_id            
                     }
                 }
             )
-    return all_chunks
+
+        #### NOTE: SWITCH TO PyPDF?
+    return chunks
 
 
 #Embeddings
-def create_embeddings(chunks):
+def create_embeddings(sources: list[Source]):
 
-    for chunk in chunks:
+    for chunk in sources:
         embedding = model.encode(chunk["text"])
         chunk["embedding"] = embedding.tolist()
 
-    return chunks
+    return sources
 
 ### RAG RESPONSE
 # RETRIEVE CONTEXT
@@ -88,6 +96,17 @@ def do_query(user_query):
 
     context = "\n\n".join(context_parts)
     prompt = build_prompt(user_query, context)
+    answer = getResponseFromAI(prompt)
+    #queryResponse = QueryResponse(answer=answer, sources=metadatas)
+
+    return {
+        "answer": answer,
+        "sources": [
+            {"title": meta.get("title"), "text": doc[:200]}
+            for doc, meta in zip(documents, metadatas)
+        ]
+    }
+
 
 
 def build_prompt(user_query, context):

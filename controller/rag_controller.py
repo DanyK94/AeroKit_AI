@@ -1,10 +1,14 @@
 import os
+import logging
 from requests import Response
-from fastapi import routerAPI, HTTPException, File, UploadFile
+from models.rag_schemas import QueryRequest
+from pydantic import BaseModel
+from fastapi import APIRouter, HTTPException, File, UploadFile
 from services.rag_service import process_document, do_query
 
 
-router = routerAPI()
+
+router = APIRouter()
 
 #Process Should Be:
 #1.Upload
@@ -16,6 +20,8 @@ router = routerAPI()
 #Upload da File
 UPLOAD_DIR = "uploads"
 
+logger = logging.getLogger(__name__)
+
 @router.post("/documents/upload/")
 async def upload_document(file: UploadFile = File(...)):
     os.makedirs(UPLOAD_DIR, exist_ok=True)
@@ -26,15 +32,17 @@ async def upload_document(file: UploadFile = File(...)):
         content = await file.read()
         f.write(content)
 
-    if process_document(file_path):
-        return Response.ok
-    else:
-        return Response.error
+    logger.info(f"Processing {file_path}")
+    try:
+        process_document(file_path)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
+    return {"status": "success"}
 
 @router.post("/chat/query")
-def chat_query(query: str):
-    return do_query(query)
+def chat_query(request: QueryRequest):
+    return do_query(request.question)
 
 @router.get("/documents")
 def get_list_documents():

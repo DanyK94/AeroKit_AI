@@ -1,16 +1,16 @@
 import chromadb
 
-client = chromadb.Client()
+client = chromadb.PersistentClient(path="./vector_db")
 
 collection = client.get_or_create_collection(name="documents")
 
 def store_chunks(chunks):
-    for i, chunks in enumerate(chunks):
+    for i, chunk in enumerate(chunks):
         collection.add(
             ids=[f"id_{i}"],
-            documents=[chunks["text"]],
-            embeddings=[chunks["embedding"]],
-            metadatas=[chunks["metadata"]]        
+            documents=[chunk["text"]],
+            embeddings=[chunk["embedding"]],
+            metadatas=[chunk["metadata"]]        
         )
 
 def get_chunks(query_embedding):
