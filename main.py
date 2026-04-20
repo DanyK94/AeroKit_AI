@@ -31,8 +31,8 @@ app.add_middleware(
 
 def main():
     print("Welcome to AeroKit AI!")
-    #chooseFunctionality()
-    mockUpload()
+    chooseFunctionality()
+    #mockUpload()
 
 def mockUpload():
     process_document()

@@ -5,13 +5,11 @@ from dao.chromadb_dao import store_chunks, get_chunks
 
 
 
-file_path = "uploads/test_text.pdf"
+file_path_mock = "uploads/test_text.pdf"
 model = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
 
 def process_document_mock():
-    elements = partition(filename=file_path)
-    if elements:
-        print("ok")
+    process_document(file_path_mock)
     return None
 
 

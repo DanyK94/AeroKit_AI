@@ -25,3 +25,4 @@ def getResponseFromAI(prompt):
     except OpenAIError as e:
         print(f"An error occurred while communicating with the AI provider: {e}")
         return None
+    
