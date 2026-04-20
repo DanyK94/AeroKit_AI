@@ -3,6 +3,7 @@ from models.airport_model import Airport
 from models.runway_model import Runway
 from models.weather_report import *
 from clients.openai_client import getResponseFromAI
+import re
 
 
 def getAirportInformation(icao_code):
@@ -26,7 +27,8 @@ def getListAirportByKeyword(keyword):
 
     response = getResponseFromAI(prompt)
     if response:
-        icao_list = response.split(', ')
+        #icao_list = response.split(', ') OLD
+        icao_list = re.findall(r'\b[A-Z]{4}\b') #REGEX FIND 4-LETTER CODES
     else:
         return None
     for port in icao_list:
@@ -39,7 +41,7 @@ def getListAirportByKeyword(keyword):
 def parseMetarWeather(data):
 
     wind = Wind(
-        direction = data.get('win_direction',{}).get('value',0),
+        direction = data.get('wind_direction',{}).get('value',0),
         speed_kt = data.get('wind_speed',{}).get('value')
     )
 

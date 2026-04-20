@@ -2,7 +2,7 @@
 import os
 import requests
 from dotenv import load_dotenv
-from config import DEFAULT_VALUE
+from core.config import DEFAULT_VALUE
 
 load_dotenv()
 

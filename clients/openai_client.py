@@ -1,6 +1,6 @@
 from openai import OpenAI, OpenAIError
 from dotenv import load_dotenv
-from config import URL_AI_PROVIDER, DEFAULT_AI_MODEL
+from core.config import URL_AI_PROVIDER, DEFAULT_AI_MODEL
 import os
 
 load_dotenv()
