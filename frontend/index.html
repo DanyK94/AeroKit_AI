@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AeroDoc Chat</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <h1>✈️ AeroDoc Chat</h1>
+            <p>Ask questions about aviation technical manuals</p>
+        </header>
+
+        <!-- Upload Section -->
+        <div class="upload-section">
+            <input type="file" id="pdfFile" accept=".pdf">
+            <button onclick="uploadPDF()" id="uploadBtn">Upload Manual</button>
+            <div id="uploadStatus"></div>
+        </div>
+
+        <!-- Current Document Info -->
+        <div id="docInfo" class="doc-info" style="display:none;">
+            <strong>Current Document:</strong> <span id="docName"></span> 
+            (<span id="docChunks"></span> chunks)
+        </div>
+
+        <!-- Chat Container -->
+        <div class="chat-container" id="chatContainer">
+            <div id="messages" class="messages"></div>
+        </div>
+
+        <!-- Input Section -->
+        <div class="input-section">
+            <input 
+                type="text" 
+                id="queryInput" 
+                placeholder="Ask a question about the manual..."
+                onkeypress="handleKeyPress(event)"
+            >
+            <button onclick="sendQuery()" id="sendBtn">Send</button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

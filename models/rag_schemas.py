@@ -3,7 +3,7 @@ from pydantic import BaseModel
 
 class QueryRequest(BaseModel):
     question: str
-    document_id: str = None
+    document_id: str | None = None
 
 class Source(BaseModel):
     text: str

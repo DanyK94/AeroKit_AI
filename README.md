@@ -10,7 +10,7 @@
 - [X] Airport Info API
 
 ## Week 2 - XX - 20/04 Started
-- [ ] RAG
+- [ ] Upload File and RAG requests
 
 ## Quick Start
 ```bash
