@@ -17,8 +17,9 @@ def process_document_mock():
     return None
 
 
-def process_document(file_path):
-    doc_id = hashlib.md5(file_path.encode()).hexdigest()[:12]
+def process_document(file_path, uuid):   
+
+    #doc_id = hashlib.md5(file_path.encode()).hexdigest()[:12]
     #Partioning as semantic parser, semantically splitting text for chunking 
     elements = partition(filename=file_path) 
     
@@ -30,7 +31,7 @@ def process_document(file_path):
 
         texts.append({"type": el.category , "text": el.text})
     
-    chunks = chunk_sections(elements, doc_id)
+    chunks = chunk_sections(elements, uuid)
     chunks = create_embeddings(chunks)
     store_chunks(chunks)
     return "ok" #TO REDEFINE

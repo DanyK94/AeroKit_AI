@@ -1,6 +1,10 @@
 const API_URL = 'http://127.0.0.1:8000';
 let currentDocId = null;
 
+document.addEventListener('DOMContentLoaded', () => {
+    loadDocuments();
+})
+
 async function uploadPDF() {
     const fileInput = document.getElementById('pdfFile');
     const file = fileInput.files[0];
@@ -58,6 +62,7 @@ async function uploadPDF() {
     } finally {
         uploadBtn.disabled = false;
     }
+    window.location = window.location;
 }
 
 async function sendQuery() {
@@ -176,8 +181,67 @@ function handleKeyPress(event) {
 }
 
     
-    
-    
+async function loadDocuments() {
+
+    try {
+        const response = await fetch(`${API_URL}/document/getall`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const documents = await response.json();
+        renderDocuments(documents);
+    }
+    catch (error) {
+        console.error('Error loading documents:', error);
+    }
+}
+
+function renderDocuments(documents) {
+    const tBody = document.getElementById("documentsBody");
+    tBody.innerHTML = "";
+
+    documents.forEach(doc => {
+        const row = document.createElement("tr");
+
+        row.innerHTML = 
+        "<td><input type='checkbox' class='doc-checkbox' data-uuid='" + doc.uuid + "'></input></td>" +
+        "<td>"+ doc.uuid +"</td>" +
+        "<td>"+ doc.title +"</td>" +
+        "<td>"+ doc.status +"</td>" +
+        "<td>"+ doc.time +"</td>";
+
+        tBody.appendChild(row);
+    });
+}
+
+function deleteDocuments() {
+    const checkboxes = document.querySelectorAll(".doc-checkbox:checked");
+    const uuids = [];
+    console.log(checkboxes);
+
+
+    checkboxes.forEach(cb => {
+        const uuid = cb.getAttribute("data-uuid");
+        uuids.push(uuid);
+
+    })
+    console.log(uuids);
+
+    try {
+        const response = fetch(`${API_URL}/document/delete`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(uuids)}
+        )}
+    catch (error) {
+        console.error('Error loading documents:', error);           
+    }
+    window.location = window.location;
+
+}
+
 
 
 

@@ -14,6 +14,7 @@ from fastapi import FastAPI
 from controller.airport_controller import router as airport_router
 from controller.app_controller import router as app_router
 from controller.rag_controller import router as rag_router
+from controller.documents_controller import router as doc_router
 from fastapi.middleware.cors import CORSMiddleware
 
 from services.rag_service import process_document
@@ -23,6 +24,7 @@ app = FastAPI()
 app.include_router(airport_router)
 app.include_router(app_router)
 app.include_router(rag_router)
+app.include_router(doc_router)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],

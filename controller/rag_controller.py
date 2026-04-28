@@ -5,6 +5,7 @@ from models.rag_schemas import QueryRequest
 from pydantic import BaseModel
 from fastapi import APIRouter, HTTPException, File, UploadFile
 from services.rag_service import process_document, do_query
+from dao.documents_dao import add_document, update_status
 
 
 
@@ -31,12 +32,15 @@ async def upload_document(file: UploadFile = File(...)):
     with open(file_path, "wb") as f:
         content = await file.read()
         f.write(content)
+    uuid = add_document(file.filename)
 
-    logger.info(f"Processing {file_path}")
+    logger.info(f"Processing {file_path} UUID: {uuid}")
     try:
-        process_document(file_path)
+        process_document(file_path, uuid)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
+    update_status(uuid, "File Processed")
 
     return {"status": "success"}
 

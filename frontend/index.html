@@ -14,6 +14,26 @@
             <p>Ask questions about aviation technical manuals</p>
         </header>
 
+        <!-- Documents Table -->
+        <div class="documents-table">
+            <table id="documentsTable">
+                <thead><tr>
+                    <th scope="col">X</th>
+                    <th scope="col">UUID</th>
+                    <th scope="col">Document Name</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Date</th>
+                </tr>
+                </thead>
+                <tbody id="documentsBody"></tbody>
+            </table>
+            <div class="lowerbar">
+                <button type="button" id="deleteBtn" onclick="deleteDocuments()">Delete Documents</button>
+                <button type="button" id="startChat">Start Chat</button>              
+            </div>
+        </div>
+
+
         <!-- Upload Section -->
         <div class="upload-section">
             <input type="file" id="pdfFile" accept=".pdf">
