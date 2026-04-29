@@ -38,6 +38,7 @@ async def upload_document(file: UploadFile = File(...)):
     try:
         process_document(file_path, uuid)
     except Exception as e:
+        update_status(uuid, "Error")
         raise HTTPException(status_code=500, detail=str(e))
     
     update_status(uuid, "File Processed")
@@ -46,7 +47,7 @@ async def upload_document(file: UploadFile = File(...)):
 
 @router.post("/chat/query")
 def chat_query(request: QueryRequest):
-    return do_query(request.question)
+    return do_query(request.question, request.document_id)
 
 @router.get("/documents")
 def get_list_documents():

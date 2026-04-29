@@ -21,7 +21,8 @@ def add_document(doc_title):
         "uuid": doc_uuid,
         "title": doc_title,
         "time": time,
-        "status": "To be processed"
+        "status": "To be processed",
+        "chunks": 0
     }
     collection.insert_one(document)
     return doc_uuid
@@ -38,9 +39,16 @@ def get_documentById(uuid):
     document = collection.find_one({"uuid": uuid})
     return document
 
+def get_storedChunks(uuid):
+    document = get_documentById(uuid)
+    return document.get("chunks", 0)
+
 def update_status(uuid, status):
     collection.update_one({"uuid": uuid}, {"$set": {"status": status}})
     return True
+
+def update_chunks(uuid, chunks):
+    collection.update_one({"uuid": uuid}, {"$set": {"chunks": chunks}})
 
 
 def delete_document(uuid):

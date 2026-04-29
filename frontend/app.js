@@ -67,9 +67,16 @@ async function uploadPDF() {
 
 async function sendQuery() {
     const input = document.getElementById('queryInput');
+    const checkboxes = document.querySelectorAll(".doc-checkbox:checked");
     const question = input.value.trim();
     console.log("Question:", question);
     if (!question) return;
+    currentDocId = null;
+
+    checkboxes.forEach( cb => {
+        const uuid = cb.getAttribute("data-uuid");
+        currentDocId = uuid;
+    })
     
     
     
@@ -96,7 +103,7 @@ async function sendQuery() {
             },
             body: JSON.stringify({
                 question: question,
-                document_id: null
+                document_id: currentDocId
             })
         });
         
@@ -242,7 +249,15 @@ function deleteDocuments() {
 
 }
 
-
+function deleteAllDocs() {
+    try {
+        const response = fetch(`${API_URL}/document/deleteAll`);
+        window.location = window.location;
+    }
+    catch (error) {
+        console.error('Error loading documents:', error);           
+    }      
+}
 
 
   

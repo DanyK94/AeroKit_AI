@@ -2,25 +2,24 @@ from unstructured.partition.auto import partition
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from sentence_transformers import SentenceTransformer
 from dao.chromadb_dao import store_chunks, get_chunks
+from dao.documents_dao import update_chunks
 from clients.openai_client import getResponseFromAI
 from models.rag_schemas import QueryResponse, Source, QueryRequest
+import logging
 import hashlib
 
 
 
+logger = logging.getLogger(__name__)
 
-file_path_mock = "uploads/test_text.pdf"
 model = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
-
-def process_document_mock():
-    process_document(file_path_mock)
-    return None
 
 
 def process_document(file_path, uuid):   
 
     #doc_id = hashlib.md5(file_path.encode()).hexdigest()[:12]
     #Partioning as semantic parser, semantically splitting text for chunking 
+    logger.info(f"Partitioning {file_path}")
     elements = partition(filename=file_path) 
     
     texts = []
@@ -33,13 +32,17 @@ def process_document(file_path, uuid):
     
     chunks = chunk_sections(elements, uuid)
     chunks = create_embeddings(chunks)
-    store_chunks(chunks)
+    stored_chunks =store_chunks(chunks)
+    logger.info(f"Stored {stored_chunks} chunks")
+    update_chunks(uuid, stored_chunks)
+
     return "ok" #TO REDEFINE
 
     
 
 #Chunking for LLM and retrieval
-def chunk_sections(section, doc_id):
+def chunk_sections(section, uuid):
+    logger.info(f"Chunking {uuid}")
     all_chunks = []
     text_splitter  = RecursiveCharacterTextSplitter(
         chunk_size=1000,
@@ -57,7 +60,7 @@ def chunk_sections(section, doc_id):
                     "type" : sec.category,
                     "chunk_index": i,
                     "page" : getattr(sec, 'page_number',0),
-                    "document_id": doc_id            
+                    "document_id": uuid            
                     }
                 }
             )
@@ -68,7 +71,7 @@ def chunk_sections(section, doc_id):
 
 #Embeddings
 def create_embeddings(sources: list[dict]):
-
+    logger.info("Creating embeddings")
     for chunk in sources:
         embedding = model.encode(chunk["text"])
         chunk["embedding"] = embedding.tolist()
@@ -77,10 +80,21 @@ def create_embeddings(sources: list[dict]):
 
 ### RAG RESPONSE
 # RETRIEVE CONTEXT
-def do_query(user_query):
+def do_query(user_query, uuid):
     query_embedding = model.encode(user_query).tolist()
 
-    results = get_chunks(query_embedding)
+    results = get_chunks(query_embedding, uuid, 8)
+    logger.info(f"Results: {len(results)}")
+
+    # DEBUG: stampa i chunks
+    print("\n=== CHUNKS RETRIEVED ===")
+    for i, (doc, meta) in enumerate(zip(results["documents"][0], results["metadatas"][0])):
+        print(f"\nChunk {i+1}:")
+        print(f"Page: {meta.get('page')}")
+        print(f"Type: {meta.get('type')}")
+        print(f"Text: {doc[:200]}...")
+        print(f"Full text length: {len(doc)}")
+    print("========================\n")
 
     documents = results["documents"][0]
     metadatas = results["metadatas"][0]
@@ -116,6 +130,6 @@ def build_prompt(user_query, context):
     You are an assistant that answers questions using the provided context.
     Context: {context}
     Question: {user_query}
-    Answer clearly and only using the context. If the answer is not present say "I don't know"
+    Answer clearly and only using the context. If you cannot define an answer say "I don't know"
     """
     return prompt

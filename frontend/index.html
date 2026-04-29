@@ -18,28 +18,32 @@
         <div class="documents-table">
             <table id="documentsTable">
                 <thead><tr>
-                    <th scope="col">X</th>
-                    <th scope="col">UUID</th>
-                    <th scope="col">Document Name</th>
-                    <th scope="col">Status</th>
-                    <th scope="col">Date</th>
+                    <th>X</th>
+                    <th>UUID</th>
+                    <th>Document Name</th>
+                    <th>Status</th>
+                    <th>Date</th>
                 </tr>
                 </thead>
                 <tbody id="documentsBody"></tbody>
             </table>
+
             <div class="lowerbar">
                 <button type="button" id="deleteBtn" onclick="deleteDocuments()">Delete Documents</button>
-                <button type="button" id="startChat">Start Chat</button>              
+                <button type="button" id="startChat">Start Chat</button>
+                <button type="button" id="delAllBtn" onclick="deleteAllDocs()">Delete All [DEV]</button>   
+                
+                <div class="upload-section">
+                    <input type="file" id="pdfFile" accept=".pdf">
+                    <button onclick="uploadPDF()" id="uploadBtn">Upload Manual</button>
+                    <div id="uploadStatus"></div>
+                </div>           
             </div>
         </div>
 
 
         <!-- Upload Section -->
-        <div class="upload-section">
-            <input type="file" id="pdfFile" accept=".pdf">
-            <button onclick="uploadPDF()" id="uploadBtn">Upload Manual</button>
-            <div id="uploadStatus"></div>
-        </div>
+
 
         <!-- Current Document Info -->
         <div id="docInfo" class="doc-info" style="display:none;">
